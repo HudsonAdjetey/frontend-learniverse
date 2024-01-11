@@ -47,23 +47,21 @@ const App = () => {
 
   const isAdmin = user && user.va1 === import.meta.env.VITE_VAL;
   const Layout = () => {
+    const navigate = useNavigate();
+
     return user ? (
       <section className="container">
         {isAdmin ? <Navbar /> : <Navbar2 />}
         <Outlet />
       </section>
     ) : (
-      <Navigate to={"/home"} replace />
+      <Navigate to={"/home"} replace /> || navigate("/")
     );
   };
   const router = createBrowserRouter([
     {
       path: "/login",
-      element: (
-        <AuthGuard>
-          <Login />
-        </AuthGuard>
-      ),
+      element: <Login />,
     },
     {
       path: "/signup",
