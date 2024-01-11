@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect } from "react";
 import {
   RouterProvider,
@@ -7,75 +6,114 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
+import Home from "./container/pages/Home";
+import Navbar from "./components/nav/Navbar";
+import Account from "./container/pages/Account";
+import Classes from "./container/pages/Classes";
+import Student from "./container/pages/Student";
+import Login from "./container/pages/Login";
+import SignUp from "./container/pages/SignUp";
+import ScheduleClass from "./container/pages/ScheduleClass";
+import Settings from "./container/pages/Settings";
 import { useSelector } from "react-redux";
+import Demo from "./container/pages/Demo";
+import Subscription from "./container/pages/Subscription";
+import AdminHome from "./container/pages/Home2";
+import Navbar2 from "./components/nav/Navbar2";
+import ErrorPage from "./container/pages/ErrorPage";
 import ErrorBoundary from "./container/pages/ErrorBoundary";
 import ToastContainers from "./components/toastify/ToastContainer";
-
-// routes.js
-const authRequiredRoutes = [
-  { path: "/account", element: <Account /> },
-  { path: "/classes", element: <Classes /> },
-  { path: "/student", element: <Student /> },
-  { path: "/schedule-class", element: <ScheduleClass /> },
-  { path: "/subscription", element: <Subscription /> },
-  { path: "/settings", element: <Settings /> },
-];
-
-const publicRoutes = [
-  { path: "/home", element: <Landing /> },
-  // Add other public routes if needed
-];
-
-const AuthGuard = ({ children }) => {
-  const navigate = useNavigate();
-  const { user, loading } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (!loading && user === null) {
-      navigate("/login");
-    }
-  }, [loading, user, navigate]);
-
-  return children;
-};
-
-const Layout = ({ isAdmin }) => {
-  return (
-    <section className="container">
-      {isAdmin ? <Navbar /> : <Navbar2 />}
-      <Outlet />
-    </section>
-  );
-};
+import Landing from "./container/pages/Landing";
 
 const App = () => {
   const { user } = useSelector((state) => state.user);
-  const isAdmin = user && user.val === import.meta.env.VITE_VAL;
 
+  // check for admin User
+
+  const AuthGuard = ({ children }) => {
+    const navigate = useNavigate();
+    const { user, loading } = useSelector((state) => state.user);
+
+    useEffect(() => {
+      if (!loading && user === null) {
+        navigate("/login");
+      }
+    }, [loading, user, navigate]);
+
+    return children;
+  };
+
+  const isAdmin = user && user.va1 === import.meta.env.VITE_VAL;
+  const Layout = () => {
+    return user ? (
+      <section className="container">
+        {isAdmin ? <Navbar /> : <Navbar2 />}
+        <Outlet />
+      </section>
+    ) : (
+      <Navigate to={"/home"} replace />
+    );
+  };
   const router = createBrowserRouter([
-    ...authRequiredRoutes.map((route) => ({
-      ...route,
-      element: <AuthGuard>{route.element}</AuthGuard>,
-    })),
-    ...publicRoutes,
+    {
+      path: "/login",
+      element: (
+        <AuthGuard>
+          <Login />
+        </AuthGuard>
+      ),
+    },
+    {
+      path: "/signup",
+      element: <SignUp />,
+    },
+
     {
       path: "/",
       element: (
         <ErrorBoundary>
-          <Layout isAdmin={isAdmin} />
+          <Layout />
         </ErrorBoundary>
       ),
       children: [
         {
           path: "/",
+          // element: <Home />,
           element: isAdmin ? <AdminHome /> : <Home />,
         },
-        ...authRequiredRoutes,
         {
-          path: "*",
-          element: <ErrorPage />,
+          path: "/account",
+          element: <Account />,
+        },
+        {
+          path: "/classes",
+          element: <Classes />,
+        },
+        {
+          path: "/student",
+          element: <Student />,
+        },
+        {
+          path: "/schedule-class",
+          element: <ScheduleClass />,
+        },
+        {
+          path: "/subscription",
+          element: <Subscription />,
+        },
+        {
+          path: "/settings",
+          element: <Settings />,
         },
       ],
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
+    },
+    {
+      path: "/home",
+      element: <Landing />,
     },
   ]);
 
