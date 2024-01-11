@@ -37,7 +37,9 @@ const App = () => {
       const userFromLocalStorage = JSON.parse(localStorage.getItem("user"));
       console.log("User from local storage:", userFromLocalStorage);
 
-      if (!loading && user !== null) {
+      if (!user) {
+        <Navigate to={"/home"} />;
+      } else {
         navigate("/");
       }
     }, [navigate, user, loading]);
@@ -55,13 +57,17 @@ const App = () => {
         <Outlet />
       </section>
     ) : (
-      <Navigate to={"/home"} replace /> || navigate("/")
+      <Navigate to={"/home"} replace />
     );
   };
   const router = createBrowserRouter([
     {
       path: "/login",
-      element: <Login />,
+      element: (
+        <AuthGuard>
+          <Login />
+        </AuthGuard>
+      ),
     },
     {
       path: "/signup",
