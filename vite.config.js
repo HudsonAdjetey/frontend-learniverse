@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://learniverse-api.onrender.com/",
-        // target: "http://localhost:5934/",
+        // target: "https://learniverse-api.onrender.com/",
+        target: "http://localhost:5934/",
         changeOrigin: true,
       },
     },

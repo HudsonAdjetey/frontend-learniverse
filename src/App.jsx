@@ -26,19 +26,21 @@ import ToastContainers from "./components/toastify/ToastContainer";
 import Landing from "./container/pages/Landing";
 
 const App = () => {
-  const { user } = useSelector((state) => state.user);
+  const { user, loading } = useSelector((state) => state.user);
 
   // check for admin User
 
   const AuthGuard = ({ children }) => {
     const navigate = useNavigate();
-    const { user, loading } = useSelector((state) => state.user);
 
     useEffect(() => {
-      if (!loading && user === null) {
-        navigate("/login");
+      const userFromLocalStorage = JSON.parse(localStorage.getItem("user"));
+      console.log("User from local storage:", userFromLocalStorage);
+
+      if (!loading && user !== null) {
+        navigate("/");
       }
-    }, [loading, user, navigate]);
+    }, [navigate, user, loading]);
 
     return children;
   };
